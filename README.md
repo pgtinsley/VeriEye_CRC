@@ -14,6 +14,8 @@ wget https://www.neurotechnology.com/download.html#megamatcher_verifinger_verilo
 unzip Neurotec_Biometric_12_3_SDK_2022-07-07.zip
 ```
 
+### Template Generation
+
 - If you want to extract iris templates from images, then navigate to the proper directory in the SDK folder.
 
 ```
@@ -38,10 +40,53 @@ cd Neurotec_Biometric_12_3_SDK/Tutorials/Biometrics/CPP/EnrollIrisFromImage/
 
 - From the frontend, compile the script with a ```make``` command while in the directory.
 
-- Copy/move the job scripts in this repository into the same EnrollIrisFromImage directory.
+> If you see a "make: Nothing to be done for: \`all\` error, then run a quick ```rm -rf .obj/```
 
-- Modify the submission job script to your filenames file(s) locations (line 13) and ```qsub``` the job script.
+- Copy/move the "template" job scripts in this repository into the same EnrollIrisFromImage directory.
 
-- Once templates are generated, you can run the IdentifyIrisCPP file (still to be done -- will add to this readme and repo when that's done).
+- Modify the "template" submission job script to your filenames file(s) locations (line 13) and ```qsub``` the job script.
 
-- Slack me (PT) or reach out via email (ptinsley@nd.edu) if you have any questions/troubles. 
+### Template Verification
+
+- Once templates are generated, you can run the VerifyIrisCPP file in this repository.
+
+- First, change to the appropriate directory:
+
+```
+cd ~/Neurotec_Biometric_12_3_SDK/Tutorials/Biometrics/CPP/VerifyIrisCPP
+```
+
+- Create corresponding "matching" file(s). These files look like this:
+
+```
+<template_filename> // PROBE TEMPLATE 1
+<template_filename> // GALLERY TEMPLATE 1
+<template_filename> // GALLERY TEMPLATE 2
+...
+<template_filename> // GALLERY TEMPLATE N
+NEXT
+<template_filename> // PROBE TEMPLATE 2
+<template_filename> // GALLERY TEMPLATE 1
+<template_filename> // GALLERY TEMPLATE 2
+...
+<template_filename> // GALLERY TEMPLATE N
+NEXT
+...
+
+# I like to use absolute paths for filenames
+# in this instance, but that's just me.
+```
+
+- Again, if you want to split up the files, follow the convention used in template generation.
+
+- Replace the original SDK VerifyIrisCPP.cpp file with the file in this repo. If you want to keep the original, I recommend renaming the original VerifyIrisCPP.cpp file to something else.
+
+- From the frontend, compile the script with a ```make``` command while in the directory.
+
+> If you see a "make: Nothing to be done for: \`all\` error, then run a quick ```rm -rf .obj/```
+
+- Copy/move the "matching" job scripts in this repository into the same VerifyIrisCPP directory.
+
+- Modify the "matching" submission job script to your filenames file(s) locations (line 13) and ```qsub``` the job script.
+
+>> Slack me (PT) or reach out via email (ptinsley@nd.edu) if you have any questions/troubles. 
