@@ -1,7 +1,4 @@
 #include <TutorialUtils.hpp>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string>
 
 #ifdef N_MAC_OSX_FRAMEWORKS
 	#include <NCore/NCore.hpp>
@@ -17,8 +14,6 @@
 	#include <NLicensing.hpp>
 #endif
 
-#include <fstream>
-
 using namespace std;
 using namespace Neurotec;
 using namespace Neurotec::Licensing;
@@ -31,11 +26,6 @@ const NChar title[] = N_T("EnrollIrisFromImage");
 const NChar description[] = N_T("Demonstrates enrollment from one image.");
 const NChar version[] = N_T("12.3.0.0");
 const NChar copyright[] = N_T("Copyright (C) 2016-2022 Neurotechnology");
-
-inline bool exists_test3 (const std::string& name) {
-  struct stat buffer;   
-  return (stat (name.c_str(), &buffer) == 0); 
-}
 
 int usage()
 {
@@ -50,11 +40,13 @@ int main(int argc, NChar **argv)
 {
 	OnStart(title, description, version, copyright, argc, argv);
 
-	/*if (argc < 3)
+	/*
+	if (argc < 3)
 	{
 		OnExit();
 		return usage();
-	}*/
+	}
+    */
 
 	//=========================================================================
 	// CHOOSE LICENCES !!!
@@ -72,11 +64,10 @@ int main(int argc, NChar **argv)
 	// TRIAL MODE
 	//=========================================================================
 	// Below code line determines whether TRIAL is enabled or not. To use purchased licenses, don't use below code line.
-	// GetTrialModeFlag() method takes value from "Bin/Licenses/TrialFlag.txt" file. So, to easily change mode for all our examples, modify that file.
+	// GetTrialModeFlag() method takes value from "Bin/Licenses/TrialFlag.txt" file. So to easily change mode for all our examples, modify that file.
 	// Also you can just set TRUE to "TrialMode" property in code.
 
-	//NLicenseManager::SetTrialMode(GetTrialModeFlag());
-	NLicenseManager::SetTrialMode(1);
+	NLicenseManager::SetTrialMode(GetTrialModeFlag());
 	cout << "Trial mode: " << NLicenseManager::GetTrialMode() << endl;
 
 	//=========================================================================
@@ -92,54 +83,38 @@ int main(int argc, NChar **argv)
 		NBiometricClient biometricClient;
 		biometricClient.SetIrisesTemplateSize(ntsLarge);
 
-        ifstream in;
-        //in.open("fnames_fake.txt");
-        in.open(argv[1]);
-        
-        string fname, tname;
-        
-        while(!in.eof()) {
-            in >> fname >> tname;
-            //cout << fname << " " << tname << endl;
+        // Open filename of image filenames to read in.
+        // Format of file looks like:
+        // <image_filename1> <template_filename1>
+        // <image_filename2> <template_filename2>
+        // ...
+        // <image_filenameN> <template_filenameN>
+        // I like to use absolute paths for filenames in this instance, but that's just me.
 
-            NIris iris;
-    		iris.SetFileName(fname);
+        ifstream in;
+        in.open(argv[1]);
+        string fname, tname;
+
+        // Keep processing until you reach end of file
+        while(!in.eof()) {
+
+    		NIris iris;
+    		iris.SetFileName(fname);        // This line changed from SDK original. (argv[1] -> fname)
     		NSubject subject;
     		subject.GetIrises().Add(iris);
-    		
     		NBiometricStatus status = biometricClient.CreateTemplate(subject);
     		if (status == nbsOk)
     		{
     			//cout << "Template extracted" << endl;
-    			//NFile::WriteAllBytes(argv[2], subject.GetTemplateBuffer());
-    			NFile::WriteAllBytes(tname, subject.GetTemplateBuffer());
+    			NFile::WriteAllBytes(tname, subject.GetTemplateBuffer());     // This line changed from SDK original. (argv[2] -> tname)
     			//cout << "Template saved successfully" << endl;
     		}
-
-    		/*else
+    		else
     		{
-    			//cout << "Extraction failed: " << NEnum::ToString(NBiometricTypes::NBiometricStatusNativeTypeOf(), status) << endl;
-    			//return -1;
-    		}*/
+    			cout << "Extraction failed: " << NEnum::ToString(NBiometricTypes::NBiometricStatusNativeTypeOf(), status) << endl;
+    			return -1;
+    		}
         }
-		 
-		/*
-		iris.SetFileName(fname);
-		NSubject subject;
-		subject.GetIrises().Add(iris);
-		NBiometricStatus status = biometricClient.CreateTemplate(subject);
-		if (status == nbsOk)
-		{
-			cout << "Template extracted" << endl;
-			NFile::WriteAllBytes(argv[2], subject.GetTemplateBuffer());
-			cout << "Template saved successfully" << endl;
-		}
-		else
-		{
-			cout << "Extraction failed: " << NEnum::ToString(NBiometricTypes::NBiometricStatusNativeTypeOf(), status) << endl;
-			return -1;
-		}
-		*/
 	}
 	catch (NError& ex)
 	{
