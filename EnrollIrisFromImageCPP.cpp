@@ -22,6 +22,8 @@ using namespace Neurotec::Biometrics::Client;
 using namespace Neurotec::Biometrics::Standards;
 using namespace Neurotec::IO;
 
+#include <fstream>
+
 const NChar title[] = N_T("EnrollIrisFromImage");
 const NChar description[] = N_T("Demonstrates enrollment from one image.");
 const NChar version[] = N_T("12.3.0.0");
