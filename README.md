@@ -32,7 +32,7 @@ cd Neurotec_Biometric_12_3_SDK/Tutorials/Biometrics/CPP/EnrollIrisFromImage/
 # in this instance, but that's just me.
 ```
 
-- In the case of a lot of images (> several thousand), I suggest using the task array functionality of the CRC. This means that you have to get a bit creative with splitting up image filenames and naming convention for the "filename" files. Different job submission scripts for the two scenarios are included in this repo.
+- In the case of a lot of images (> several thousand), I suggest using the task array functionality of the CRC. This means that you have to get a bit creative with splitting up image filenames and naming convention for the "filename" files. Different job submission scripts for the two scenarios are included in this repo. Note that AFS has a file limit of ~64k, so you may need to create several different directories to hold all the templates.
 
 - Replace the original SDK EnrollIrisFromImage.cpp file with the file in this repo. If you want to keep the original, I recommend renaming the original EnrollIrisFromImageCPP.cpp file to something else.
 
