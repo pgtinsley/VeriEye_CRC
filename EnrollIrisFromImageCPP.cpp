@@ -101,6 +101,9 @@ int main(int argc, NChar **argv)
         while(!in.eof()) {
 
     		NIris iris;
+		
+		in >> fname >> tname;
+		
     		iris.SetFileName(fname);        // This line changed from SDK original. (argv[1] -> fname)
     		NSubject subject;
     		subject.GetIrises().Add(iris);
